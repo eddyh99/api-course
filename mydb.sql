@@ -26,7 +26,7 @@ DROP TABLE IF EXISTS `courses`;
 CREATE TABLE `courses` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
-  `banner` varchar(255) DEFAULT NULL,
+  `cover` varchar(255) DEFAULT NULL,
   `description` text DEFAULT NULL,
   `mentor_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -73,6 +73,7 @@ CREATE TABLE `user` (
   `payment_type` enum('banktransfer','stripe','usdt','usdc') DEFAULT NULL,
   `payment_details` text DEFAULT NULL,
   `payment_status` enum('unpaid','pending','completed') NOT NULL DEFAULT 'unpaid',
+  `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -85,8 +86,8 @@ CREATE TABLE `user` (
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` VALUES
-(2,'b@b.b','40bd001563085fc35165329ea1ff5c5ecbdbbeef','active','5134','member',0.00,NULL,NULL,'unpaid'),
-(8,'a@a.a','40bd001563085fc35165329ea1ff5c5ecbdbbeef','active',NULL,'mentor',0.00,NULL,NULL,'unpaid');
+(2,'b@b.b','40bd001563085fc35165329ea1ff5c5ecbdbbeef','active','5134','member',0.00,NULL,NULL,'unpaid','Agus'),
+(8,'a@a.a','40bd001563085fc35165329ea1ff5c5ecbdbbeef','active',NULL,'mentor',0.00,NULL,NULL,'unpaid','Subki');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -99,4 +100,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2025-05-07 14:04:24
+-- Dump completed on 2025-05-14 13:56:38
