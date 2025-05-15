@@ -17,12 +17,11 @@ class User extends BaseController
 
         $mdata = [
             'email'  => trim($data->email),
-            'role'   => trim($data->role),
-            'amount' => trim($data->amount)
+            'role'  => trim($data->role),
+            'otp'    => rand(1000, 9999)
         ];
-        $mdata['otp'] = rand(1000, 9999);
-		$result = $this->user->add($mdata);
 
+		$result = $this->user->add($mdata);
 		if (!@$result->success) {
 			if ($result->code == 1060 || $result->code == 1062) {
 				$result->message = $mdata['role'] . ' already registered';
@@ -38,9 +37,15 @@ class User extends BaseController
         return $this->respond(error_msg(201, "user", null, $message), 201);
     }
 
-    public function getAll()
+    public function getMentor()
     {
-        $result = $this->user->getUsers();
+        $result = $this->user->getMentor();
+        return $this->respond(error_msg($result->code, "user", null, $result->message), $result->code);
+    }
+
+    public function getMember()
+    {
+        $result = $this->user->getMember();
         return $this->respond(error_msg($result->code, "user", null, $result->message), $result->code);
     }
 

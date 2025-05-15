@@ -45,12 +45,40 @@ class Mdl_user extends Model
         }
     }
 
-    public function getUsers()
+    public function getMentor()
     {
 
         try {
 
-            $sql = "SELECT * FROM user";
+            $sql = "SELECT * FROM user WHERE role = 'mentor'";
+
+            $query = $this->db->query($sql)->getResult();
+
+            if (!$query) {
+                return (object) [
+                    'code'    => 200,
+                    'message' => []
+                ];
+            }
+        } catch (\Exception $e) {
+            return (object) [
+                'code'    => 500,
+                'message' => 'An error occurred'
+            ];
+        }
+
+        return (object) [
+            "code"    => 200,
+            "message"    => $query
+        ];
+    }
+
+    public function getMember()
+    {
+
+        try {
+
+            $sql = "SELECT *, 100 as material_exam, 100 as demo_trade FROM user WHERE role = 'member'";
 
             $query = $this->db->query($sql)->getResult();
 
