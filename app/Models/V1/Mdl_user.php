@@ -50,7 +50,7 @@ class Mdl_user extends Model
 
         try {
 
-            $sql = "SELECT * FROM user WHERE role = 'mentor'";
+            $sql = "SELECT * FROM user WHERE role = 'mentor' AND is_delete = false";
 
             $query = $this->db->query($sql)->getResult();
 
@@ -78,7 +78,7 @@ class Mdl_user extends Model
 
         try {
 
-            $sql = "SELECT *, 100 as material_exam, 100 as demo_trade FROM user WHERE role = 'member'";
+            $sql = "SELECT *, 100 as material_exam, 100 as demo_trade FROM user WHERE role = 'member' AND is_delete = false";
 
             $query = $this->db->query($sql)->getResult();
 
@@ -266,5 +266,43 @@ class Mdl_user extends Model
                 'message' => 'An error occurred while updating token'
             ];
         }
+    }
+
+    public function deleteby_email($mdata)
+    {
+        try {
+            $sql = "SELECT email, role FROM user where email = ?";
+            $user = $this->db->query($sql, $mdata['email'])->getRow();
+
+            if (!$user) {
+                return (object) [
+                    'code'    => 404,
+                    'message' => 'User not found.'
+                ];
+            }
+
+            if($user->role == 'superadmin') {
+                return (object) [
+                    'code'    => 403,
+                    'message' => 'Action denied. Superadmin cannot be deleted.'
+                ];
+            }
+
+            $this->set([
+                'email' => $mdata['new_email'],
+                'is_delete' => true
+            ])->where('email', $user->email)->update();
+
+        } catch (Exception $e) {
+            return (object) [
+                'code'    => 500,
+                'message' => 'An error occurred while deleting the account.' .$e
+            ];
+        }
+
+        return (object) [
+            'code'    => 201,
+            'message' => 'Account has been successfully deleted.'
+        ];
     }
 }

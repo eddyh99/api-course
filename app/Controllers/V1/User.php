@@ -86,4 +86,21 @@ class User extends BaseController
         return $this->respond(error_msg(201, "member", null, $result->message), 201);
     }
 
+    public function postDestroy()
+    {
+        $email = $this->request->getJSON()->email ?? null;
+
+        $mdata = [
+            'email' => $email,
+            'new_email' => $email . '_' . date('Y-m-d')
+        ];
+        $result = $this->user->deleteby_email($mdata);
+
+        if (@$result->code != 201) {
+			return $this->respond(error_msg($result->code, "user", "01", $result->message), $result->code);
+		}
+
+        return $this->respond(error_msg(201, "user", null, $result->message), 201);
+    }
+
 }

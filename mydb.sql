@@ -74,9 +74,10 @@ CREATE TABLE `user` (
   `payment_details` text DEFAULT NULL,
   `payment_status` enum('unpaid','pending','completed') NOT NULL DEFAULT 'unpaid',
   `name` varchar(255) DEFAULT NULL,
+  `is_delete` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -86,8 +87,10 @@ CREATE TABLE `user` (
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` VALUES
-(2,'b@b.b','40bd001563085fc35165329ea1ff5c5ecbdbbeef','active','5134','member',0.00,NULL,NULL,'unpaid','Agus'),
-(8,'a@a.a','40bd001563085fc35165329ea1ff5c5ecbdbbeef','active',NULL,'mentor',0.00,NULL,NULL,'unpaid','Subki');
+(2,'b@b.b','40bd001563085fc35165329ea1ff5c5ecbdbbeef','active','5134','member',0.00,NULL,NULL,'unpaid','Agus',0),
+(8,'a@a.a','40bd001563085fc35165329ea1ff5c5ecbdbbeef','active',NULL,'mentor',0.00,NULL,NULL,'unpaid','Subki',0),
+(18,'fwzk8mhlpw@knmcadibav.com',NULL,'active','7398','mentor',NULL,NULL,NULL,'unpaid',NULL,0),
+(20,'myadmin2@gmail.com',NULL,'active','8180','member',NULL,NULL,NULL,'unpaid',NULL,0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -100,4 +103,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2025-05-14 13:56:38
+-- Dump completed on 2025-05-17 16:26:13
