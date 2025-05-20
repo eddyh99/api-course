@@ -24,12 +24,36 @@ class Mdl_course extends Model
     protected $useTimestamps = true;
 
 
+    public function add($data)
+    {
+        try {
+            $course = $this->db->table("courses");
+            $course->insert($data);
+    
+            return (object) [
+                'code'    => 201,
+                'message' => 'Course added successfully.'
+            ];
+        } catch (\Exception $e) {
+            return (object) [
+                'code'    => 500,
+                'message' => 'Failed to add course.'
+            ];
+        }
+    }
+    
+
     public function getCourse()
     {
 
         try {
 
-            $sql = "SELECT * FROM courses INNER JOIN user u ON u.id = courses.mentor_id";
+            $sql = "SELECT 
+                    *,
+                    SUBSTRING_INDEX(courses.description, ' ', 30) AS short_desc,
+                    u.name AS mentor
+                    FROM courses
+                    INNER JOIN user u ON u.id = courses.mentor_id";
 
             $query = $this->db->query($sql)->getResult();
 

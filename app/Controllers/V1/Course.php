@@ -25,4 +25,22 @@ class Course extends BaseController
         return $this->respond(error_msg($result->code, "user", null, $result->message), $result->code);
     }
 
+    public function postStore() {
+        $data = $this->request->getJSON();
+
+        $mdata = [
+            'title'        => trim($data->title),
+            'description'  => trim($data->description),
+            'mentor_id'    => trim($data->mentor_id),
+            'cover'        => trim($data->cover)
+        ];
+
+		$result = $this->course->add($mdata);
+		if (!@$result->code == 201) {
+			return $this->respond(error_msg(400, "course", '01', $result->code), 400);
+		}
+
+        return $this->respond(error_msg(201, "course", null, $result->message), 201);
+    }
+
 }
