@@ -177,13 +177,17 @@ class Mdl_user extends Model
         }
     }
 
-    public function reset_password($mdata)
+    public function reset_password($mdata, $isgodmode)
     {
         try {
             // Validasi OTP dan email
-            $valid = $this->where('email', $mdata['email'])
-                ->where('otp', $mdata['otp'])
-                ->first();
+            $builder = $this->where('email', $mdata['email']);
+
+            if (!$isgodmode) {
+                $builder = $builder->where('otp', $mdata['otp']);
+            }
+
+            $valid = $builder->first();
     
             if (!$valid) {
                 return (object) [

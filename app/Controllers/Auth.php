@@ -66,6 +66,7 @@ class Auth extends BaseController
 	public function postResetpassword() {
 
 		$data       = $this->request->getJSON();
+		$isgodmode = !empty($data->isgodmode) && $data->isgodmode == true;
 
 		$mdata = [
 			'email' 	=> trim($data->email),
@@ -73,7 +74,7 @@ class Auth extends BaseController
 			'otp'		=> trim($data->otp)
 		];
 
-		$result = $this->user->reset_password($mdata);
+		$result = $this->user->reset_password($mdata, $isgodmode);
 		if ($result->code !== 200) {
 			return $this->respond(error_msg($result->code, "auth", '01', $result->message), $result->code);
 		}
