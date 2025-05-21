@@ -123,5 +123,42 @@ class Mdl_live extends Model
             ];
         }
     }
+
+    public function getActive_live()
+    {
+
+        try {
+
+            $sql = "SELECT
+                        live.title,
+                        DATE_FORMAT(start_date, '%W, %d %M %Y - %h.%i %p') as start_date,
+                        u.name as mentor
+                    FROM
+                        live
+                        INNER JOIN user u ON u.id = live.mentor_id
+                    WHERE
+                        live.status = 'live'";
+
+            $query = $this->db->query($sql)->getRow();
+
+            if (!$query) {
+                return (object) [
+                    'code'    => 404,
+                    'message' => []
+                ];
+            }
+        } catch (\Exception $e) {
+            return (object) [
+                'code'    => 500,
+                'message' => 'An error occurred'
+            ];
+        }
+
+        return (object) [
+            "code"    => 200,
+            "message"    => $query
+        ];
+    }
+
     
 }

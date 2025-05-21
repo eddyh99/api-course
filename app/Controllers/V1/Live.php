@@ -34,7 +34,13 @@ class Live extends BaseController
     public function getAll_schedule()
     {
         $result = $this->live->getLive();
-        return $this->respond(error_msg($result->code, "user", null, $result->message), $result->code);
+        return $this->respond(error_msg($result->code, "live", null, $result->message), $result->code);
+    }
+
+    public function getActive_live()
+    {
+        $result = $this->live->getActive_live();
+        return $this->respond(error_msg($result->code, "live", null, $result->message), $result->code);
     }
 
     public function postDestroy()
@@ -44,9 +50,9 @@ class Live extends BaseController
         $result = $this->live->deleteby_id($id);
 
         if (@$result->code != 201) {
-			return $this->respond(error_msg($result->code, "user", "01", $result->message), $result->code);
+			return $this->respond(error_msg($result->code, "live", "01", $result->message), $result->code);
 		}
 
-        return $this->respond(error_msg(201, "user", null, $result->message), 201);
+        return $this->respond(error_msg(201, "live", null, $result->message), 201);
     }
 }
