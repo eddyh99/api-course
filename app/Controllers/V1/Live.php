@@ -30,4 +30,23 @@ class Live extends BaseController
 
         return $this->respond(error_msg(201, "course", null, $result->message), 201);
     }
+
+    public function getAll_schedule()
+    {
+        $result = $this->live->getLive();
+        return $this->respond(error_msg($result->code, "user", null, $result->message), $result->code);
+    }
+
+    public function postDestroy()
+    {
+        $id = $this->request->getJSON()->id ?? null;
+
+        $result = $this->live->deleteby_id($id);
+
+        if (@$result->code != 201) {
+			return $this->respond(error_msg($result->code, "user", "01", $result->message), $result->code);
+		}
+
+        return $this->respond(error_msg(201, "user", null, $result->message), 201);
+    }
 }

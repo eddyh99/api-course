@@ -3,6 +3,7 @@
 namespace App\Models\V1;
 
 use CodeIgniter\Model;
+use Exception;
 
 /*----------------------------------------------------------
     Modul Name  : Database live 
@@ -16,7 +17,7 @@ use CodeIgniter\Model;
 class Mdl_live extends Model
 {
     protected $server_tz = "Asia/Singapore";
-    protected $table      = 'courses';
+    protected $table      = 'live';
     protected $primaryKey = 'id';
 
     protected $protectFields = false;
@@ -48,27 +49,79 @@ class Mdl_live extends Model
         }
     }
 
+    public function getLive()
+    {
+
+        try {
+
+            $sql = "SELECT 
+                    live.id,
+                    live.title,
+                    live.start_date,
+                    u.name AS mentor
+                    FROM live
+                    INNER JOIN user u ON u.id = live.mentor_id";
+
+            $query = $this->db->query($sql)->getResult();
+
+            if (!$query) {
+                return (object) [
+                    'code'    => 404,
+                    'message' => []
+                ];
+            }
+        } catch (\Exception $e) {
+            return (object) [
+                'code'    => 500,
+                'message' => 'An error occurred' . $e
+            ];
+        }
+
+        return (object) [
+            "code"    => 200,
+            "message"    => $query
+        ];
+    }
+
     private function checkEvent($data) {
-        $startDateTime = $data['start_date'];    
-        $durationStr = $data['duration'];     
-
-        $start = new \DateTime($startDateTime);
-        $end = clone $start;
-        $end->modify("+{$durationStr} minutes");
-        $end->modify("+60 minutes");
-
-        $startStr = $start->format('Y-m-d H:i:s');
-        $endStr = $end->format('Y-m-d H:i:s');
-
+        $startNew = $data['start_date'];
+    
         $builder = $this->db->table('live');
-
+    
         $builder->groupStart()
-            ->where('start_date <', $endStr)
-            ->where("DATE_ADD(start_date, INTERVAL duration MINUTE) > ", $startStr)
-            ->groupEnd();
-
+        ->where('start_date <=', $startNew)
+        ->where("ADDTIME(start_date, SEC_TO_TIME((duration + 60) * 60)) >=", $startNew)
+        ->groupEnd();    
+    
         $existing = $builder->get()->getResult();
-
+    
         return count($existing) > 0;
     }
+    
+    
+
+    public function deleteby_id($id)
+    {
+        try {
+            $deleted = $this->delete($id);
+    
+            if (!$deleted) {
+                return (object) [
+                    'code'    => 404,
+                    'message' => 'Live not found or already deleted.'
+                ];
+            }
+    
+            return (object) [
+                'code'    => 201,
+                'message' => 'Live has been successfully deleted.'
+            ];
+        } catch (Exception $e) {
+            return (object) [
+                'code'    => 500,
+                'message' => 'An error occurred while deleting the live.'
+            ];
+        }
+    }
+    
 }
