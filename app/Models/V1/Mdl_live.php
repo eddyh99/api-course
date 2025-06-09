@@ -133,12 +133,19 @@ class Mdl_live extends Model
             $sql = "SELECT
                         live.title,
                         DATE_FORMAT(start_date, '%W, %d %M %Y - %h.%i %p') as start_date,
-                        u.name as mentor
+                        u.name as mentor,
+                        live.roomid,
+                        TIMESTAMPDIFF(MINUTE, NOW(), start_date) AS remaining
                     FROM
                         live
                         INNER JOIN user u ON u.id = live.mentor_id
                     WHERE
-                        live.status = 'live'";
+                        -- Sedang berlangsung sekarang
+                        NOW() BETWEEN start_date
+                        AND DATE_ADD(start_date, INTERVAL duration MINUTE)
+                        OR -- Akan dimulai dalam 2 jam
+                        start_date BETWEEN NOW()
+                        AND DATE_ADD(NOW(), INTERVAL 2 HOUR)";
 
             $query = $this->db->query($sql)->getRow();
 
