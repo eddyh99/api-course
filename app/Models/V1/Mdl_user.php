@@ -72,13 +72,40 @@ class Mdl_user extends Model
             "message"    => $query
         ];
     }
+    
+    public function member_email(){
+        try {
+
+            $sql = "SELECT id, email FROM user WHERE role = 'member' AND is_delete = false AND payment_status='completed'";
+
+            $query = $this->db->query($sql)->getResult();
+
+            if (!$query) {
+                return (object) [
+                    'code'    => 200,
+                    'message' => []
+                ];
+            }
+        } catch (\Exception $e) {
+            return (object) [
+                'code'    => 500,
+                'message' => 'An error occurred'
+            ];
+        }
+
+        return (object) [
+            "code"    => 200,
+            "message"    => $query
+        ];
+        
+    }
 
     public function getMember()
     {
 
         try {
 
-            $sql = "SELECT *, 100 as material_exam, 100 as demo_trade FROM user WHERE role = 'member' AND is_delete = false";
+            $sql = "SELECT *, 100 as material_exam, 100 as demo_trade FROM user WHERE role = 'member' AND is_delete = false AND payment_status='completed'";
 
             $query = $this->db->query($sql)->getResult();
 
