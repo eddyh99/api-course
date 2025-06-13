@@ -58,6 +58,7 @@ class Mdl_live extends Model
                         live.id,
                         live.title,
                         live.start_date,
+                        live.roomid,
                         u.name AS mentor
                     FROM
                         live
