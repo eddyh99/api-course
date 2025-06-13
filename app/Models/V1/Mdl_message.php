@@ -63,4 +63,31 @@ class Mdl_message extends Model
         return $query->getRow();
     }
 
+    public function update_status($id, $status)
+    {
+
+        if ($status === 'is_fav') {
+            $sql = "UPDATE message SET $status = NOT $status WHERE id = ?";
+            $query = $this->db->query($sql, [$id]); // Use array for parameters
+    
+            if ($query && $this->db->affectedRows() > 0) {
+                return (object) ['success' => true, 'message' => 'Status updated successfully.'];
+            }
+        }else if ($status === 'is_read'){
+            $sql = "UPDATE message SET is_read = 1 WHERE id = ?";
+            $query = $this->db->query($sql, [$id]); // Use array for parameters
+            return (object) ['success' => true, 'message' => 'Status updated successfully.'];
+        }
+    
+        return (object) ['success' => false, 'message' => 'Update failed or invalid status.'];
+    }
+    
+    public function delete_message($id){
+        $this->delete($id);
+        if ($this->db->affectedRows() > 0) {
+            return (object) ['success' => true, 'message' => 'Status updated successfully.'];
+        }
+        return (object) ['success' => false, 'message' => 'Update failed or invalid status.'];
+    }
+
 }
