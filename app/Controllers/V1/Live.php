@@ -20,7 +20,8 @@ class Live extends BaseController
             'mentor_id'  => trim($data->mentor_id),
             'start_date' => trim($data->start_date),
             'status'     => 'upcoming',
-            'duration'   => trim($data->duration)
+            'duration'   => trim($data->duration),
+            'roomid'     => substr(str_shuffle('abcdefghijklmnopqrstuvwxyz0123456789'), 0, 7)
         ];
 
 		$result = $this->live->add($mdata);
