@@ -49,6 +49,12 @@ class User extends BaseController
         return $this->respond(error_msg($result->code, "user", null, $result->message), $result->code);
     }
 
+    public function getMember_email()
+    {
+        $result = $this->user->member_email();
+        return $this->respond(error_msg($result->code, "user", null, $result->message), $result->code);
+    }
+
     public function getUser_byemail() {
         $email = filter_var($this->request->getVar('email'), FILTER_SANITIZE_EMAIL);
         $result = $this->user->getUser_byEmail($email);
