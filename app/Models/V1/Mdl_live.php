@@ -64,7 +64,7 @@ class Mdl_live extends Model
                         INNER JOIN user u ON u.id = live.mentor_id
                         -- filter live yang sudah berlalu/selesai
                     WHERE
-                        live.start_date > = NOW() - INTERVAL 1 DAY";
+                        live.start_date >= NOW() - INTERVAL 1 DAY";
 
             $query = $this->db->query($sql)->getResult();
 
