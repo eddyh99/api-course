@@ -54,14 +54,18 @@ class Mdl_live extends Model
 
         try {
 
-            $sql = "SELECT 
-                    live.id,
-                    live.title,
-                    live.start_date,
-                    live.roomid,
-                    u.name AS mentor
-                    FROM live
-                    INNER JOIN user u ON u.id = live.mentor_id";
+            $sql = "SELECT
+                        live.id,
+                        live.title,
+                        live.start_date,
+                        live.roomid,
+                        u.name AS mentor
+                    FROM
+                        live
+                        INNER JOIN user u ON u.id = live.mentor_id
+                        -- filter live yang sudah berlalu/selesai
+                    WHERE
+                        live.start_date >= NOW() - INTERVAL 1 DAY";
 
             $query = $this->db->query($sql)->getResult();
 
