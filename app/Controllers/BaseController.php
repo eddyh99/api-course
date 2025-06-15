@@ -8,6 +8,7 @@ use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use Predis\Client as Redis;
 
 /**
  * Class BaseController
@@ -55,5 +56,11 @@ abstract class BaseController extends Controller
 
         // E.g.: $this->session = service('session');
         $this->validation = \Config\Services::validation();
+        // Initialize Predis manually
+        $this->redis = new Redis([
+            'scheme' => 'tcp',
+            'host'   => '127.0.0.1',
+            'port'   => 6379,
+        ]);
     }
 }
