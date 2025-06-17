@@ -59,6 +59,7 @@ class Mdl_live extends Model
                         live.title,
                         live.start_date,
                         live.roomid,
+                        DATE_ADD(live.start_date, INTERVAL live.duration MINUTE) AS end_date,
                         u.name AS mentor
                     FROM
                         live
