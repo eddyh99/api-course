@@ -85,7 +85,7 @@ class Mdl_message extends Model
     public function delete_message($id){
         $this->delete($id);
         if ($this->db->affectedRows() > 0) {
-            return (object) ['success' => true, 'message' => 'Status updated successfully.'];
+            return (object) ['success' => true, 'message' => 'Delete Message successfully.'];
         }
         return (object) ['success' => false, 'message' => 'Update failed or invalid status.'];
     }

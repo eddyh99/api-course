@@ -42,14 +42,14 @@ class Message extends BaseController
         $status = filter_var($this->request->getVar('status'));
 
 		$result = $this->message->update_status($id,$status);
-        return $this->respond(error_msg(200, "message", null, $result), 200);
+        return $this->respond(error_msg(200, "message", null, $result->message), 200);
     }
     
     public function getDelete_byid(){
         $id = filter_var($this->request->getVar('id'), FILTER_SANITIZE_NUMBER_INT);
         
 		$result = $this->message->delete_message($id);
-        return $this->respond(error_msg(200, "message", null, $result), 200);
+        return $this->respond(error_msg(200, "message", null, $result->message), 200);
     }
 
 }
