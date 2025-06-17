@@ -173,5 +173,33 @@ class Mdl_live extends Model
         ];
     }
 
+    public function getLive_byRoomId($roomid)
+    {
+
+        try {
+
+            $sql = "SELECT *, DATE_ADD(live.start_date, INTERVAL live.duration MINUTE) AS end_date FROM live WHERE roomid = ?";
+
+            $query = $this->db->query($sql, [$roomid])->getRow();
+
+            if (!$query) {
+                return (object) [
+                    'code'    => 200,
+                    'message' => []
+                ];
+            }
+        } catch (\Exception $e) {
+            return (object) [
+                'code'    => 500,
+                'message' => 'An error occurred'
+            ];
+        }
+
+        return (object) [
+            "code"    => 200,
+            "message"    => $query
+        ];
+    }
+
     
 }

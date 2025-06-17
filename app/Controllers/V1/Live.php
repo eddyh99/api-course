@@ -56,4 +56,15 @@ class Live extends BaseController
 
         return $this->respond(error_msg(201, "live", null, $result->message), 201);
     }
+
+    public function getLive_byroomid() {
+        $idroom = $this->request->getVar('roomid');
+        $result = $this->live->getLive_byRoomId($idroom);
+
+        if (@$result->code != 200) {
+            return $this->respond(error_msg($result->code, "live", "01", $result->message), $result->code);
+        }
+
+        return $this->respond(error_msg(200, "live", null, $result->message), 200);
+    }
 }
