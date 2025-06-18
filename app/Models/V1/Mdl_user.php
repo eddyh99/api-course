@@ -105,7 +105,33 @@ class Mdl_user extends Model
 
         try {
 
-            $sql = "SELECT *, 100 as material_exam, 100 as demo_trade FROM user WHERE role = 'member' AND is_delete = false AND payment_status='completed'";
+            $sql = "SELECT 
+                u.*, 
+                100 AS material_exam, 
+                100 AS demo_trade, 
+                tc.id AS trade_id,
+                tc.status
+            FROM user u
+            LEFT JOIN (
+                SELECT 
+                    t1.*
+                FROM trade_capital t1
+                WHERE t1.id = (
+                    SELECT t2.id
+                    FROM trade_capital t2
+                    WHERE t2.user_id = t1.user_id
+                    ORDER BY 
+                        -- Prefer active
+                        CASE WHEN t2.status = 'active' THEN 1 ELSE 2 END,
+                        t2.created_at DESC
+                    LIMIT 1
+                )
+            ) tc ON u.id = tc.user_id
+            WHERE 
+                u.role = 'member' 
+                AND u.is_delete = false 
+                AND u.payment_status = 'completed';
+            ";
 
             $query = $this->db->query($sql)->getResult();
 

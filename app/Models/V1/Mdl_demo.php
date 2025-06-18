@@ -158,6 +158,38 @@ class Mdl_demo extends Model
         ];
     }
 
+    public function trade_exam($data){
+        try{
+            $trade = $this->db->table("trade_capital");
+            if (!$trade->insert($data)) {
+                return (object) [
+                    'status' => false,
+                    'message' => 'Failed to set capital'
+                ];
+            }
+        } catch (\Exception $e) {
+            return (object) [
+                'status'    => false,
+                'message' => $e->getMessage()//'An error occurred'
+            ];
+        }
+
+        return (object) [
+            "status"    => true,
+            'message' => 'Successfully open Demo Trade'       
+        ];
+    }
+    
+    public function reopen_trade($status, $trade_id){
+        $this->db->table('trade_capital')
+        ->where('id', $trade_id)
+        ->update(['status' => $status]);
+        return (object) [
+            "status"    => true,
+            'message' => 'Successfully Updated'       
+        ];
+    }
+    
     public function filled_orders($orderid){
         $this->db->table('trade_table')
         ->where('id', $orderid)
@@ -172,6 +204,20 @@ class Mdl_demo extends Model
                 AND tt.status='filled' 
                 AND tc.status='active'";
         $query=$this->db->query($sql,$id);
+        return (object) [
+            "status"     => true,
+            "message"    => $query->getResult()
+        ];
+    }
+    
+    public function trade_historybyEmail($email){
+        $sql="SELECT tt.* 
+                FROM trade_table tt INNER JOIN trade_capital tc 
+                    ON tt.trade_id=tc.id 
+                INNER JOIN user us ON tt.user_id=us.id
+                WHERE us.email=? 
+                AND tc.status='active'";
+        $query=$this->db->query($sql,$email);
         return (object) [
             "status"     => true,
             "message"    => $query->getResult()

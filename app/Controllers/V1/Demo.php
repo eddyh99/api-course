@@ -10,6 +10,7 @@ class Demo extends BaseController
     public function __construct()
     {
         $this->demo  = model('App\Models\V1\Mdl_demo');
+        $this->user  = model('App\Models\V1\Mdl_user');
     }
 
     public function getBalance()
@@ -59,5 +60,39 @@ class Demo extends BaseController
             return $this->respond(error_msg(200, "demo", null, $result->message), 200);
         }
     }
+    
+    public function getTrade_historybyemail(){
+        $email = filter_var($this->request->getVar('email'), FILTER_VALIDATE_EMAIL);
+        $result = $this->demo->trade_historybyEmail($email);
+        if ($result->status){
+            return $this->respond(error_msg(200, "demo", null, $result->message), 200);
+        }
+    }
+    
+     public function postOpen_exam(){
+        $data   = $this->request->getJSON();
+        $user_id = $this->user->getUser_byEmail($data->email)->message->id;
+        $mdata = array(
+                "user_id"   => $user_id,
+                "capital"   => $data->capital,
+                "status"    => 'active'
+            );
 
+        $result = $this->demo->trade_exam($mdata);
+        if (!$result->status){
+            return $this->respond(error_msg(400, "order", '02', $result->message), 400);
+        }
+        
+        return $this->respond(error_msg(200, "order", '01', $result->message), 200);
+    }
+    
+    public function postReopen(){
+        $data   = $this->request->getJSON();
+        $result = $this->demo->reopen_trade($data->status, $data->trade_id);
+        if (!$result->status){
+            return $this->respond(error_msg(400, "order", '02', $result->message), 400);
+        }
+        
+        return $this->respond(error_msg(200, "order", '01', $result->message), 200);
+    }
 }
