@@ -54,14 +54,19 @@ class Mdl_live extends Model
 
         try {
 
-            $sql = "SELECT 
-                    live.id,
-                    live.title,
-                    live.start_date,
-                    live.roomid,
-                    u.name AS mentor
-                    FROM live
-                    INNER JOIN user u ON u.id = live.mentor_id";
+            $sql = "SELECT
+                        live.id,
+                        live.title,
+                        live.start_date,
+                        live.roomid,
+                        DATE_ADD(live.start_date, INTERVAL live.duration MINUTE) AS end_date,
+                        u.name AS mentor
+                    FROM
+                        live
+                        INNER JOIN user u ON u.id = live.mentor_id
+                        -- filter live yang sudah berlalu/selesai
+                    WHERE
+                        live.start_date >= NOW() - INTERVAL 1 DAY";
 
             $query = $this->db->query($sql)->getResult();
 
@@ -152,6 +157,34 @@ class Mdl_live extends Model
             if (!$query) {
                 return (object) [
                     'code'    => 404,
+                    'message' => []
+                ];
+            }
+        } catch (\Exception $e) {
+            return (object) [
+                'code'    => 500,
+                'message' => 'An error occurred'
+            ];
+        }
+
+        return (object) [
+            "code"    => 200,
+            "message"    => $query
+        ];
+    }
+
+    public function getLive_byRoomId($roomid)
+    {
+
+        try {
+
+            $sql = "SELECT *, DATE_ADD(live.start_date, INTERVAL live.duration MINUTE) AS end_date FROM live WHERE roomid = ?";
+
+            $query = $this->db->query($sql, [$roomid])->getRow();
+
+            if (!$query) {
+                return (object) [
+                    'code'    => 200,
                     'message' => []
                 ];
             }

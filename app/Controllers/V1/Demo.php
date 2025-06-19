@@ -52,6 +52,29 @@ class Demo extends BaseController
         $data->order_id = $result->message;
         return $this->respond(error_msg(200, "order", '01', $data), 200);
     }
+
+    public function postTrade_sell (){
+        $data   = $this->request->getJSON();
+        $result = $this->demo->getbalance_byid($data->user_id)->message;
+        $balance    = $result->btc_qty ?? 0;
+
+        $price      = str_replace(',', '', $data->order_price);
+        $btcAmount = str_replace(',', '', $data->btc_qty);
+
+        if (bccomp($btcAmount, $balance, 8) === 1) {
+            return $this->respond(error_msg(400, "order", '01', 'Insufficient Balance'), 400);
+        }
+        
+        $usdtQty = $this->floorToDecimal($btcAmount * $price, 6);
+        $data->usdt_qty = $usdtQty;
+        $result = $this->demo->buy_trade($data);
+        if (!$result->status){
+            return $this->respond(error_msg(400, "order", '02', $result->message), 400);
+        }
+        
+        $data->order_id = $result->message;
+        return $this->respond(error_msg(200, "order", '01', $data), 200);
+    }
     
     public function getTrade_history(){
         $id = filter_var($this->request->getVar('id'), FILTER_SANITIZE_NUMBER_INT);
