@@ -130,7 +130,7 @@ class Mdl_user extends Model
             WHERE 
                 u.role = 'member' 
                 AND u.is_delete = false 
-                AND u.payment_status = 'completed';
+                -- AND u.payment_status = 'completed'
             ";
 
             $query = $this->db->query($sql)->getResult();
