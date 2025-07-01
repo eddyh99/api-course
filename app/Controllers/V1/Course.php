@@ -36,11 +36,26 @@ class Course extends BaseController
         ];
 
 		$result = $this->course->add($mdata);
-		if (!@$result->code == 201) {
-			return $this->respond(error_msg(400, "course", '01', $result->code), 400);
+		if (@$result->code !== 201) {
+			return $this->respond(error_msg(400, "course", '01', $result->message), 400);
+		}
+        $is_live = $data->islive;
+        $id_course = $result->id;
+
+        $videos = array_map(function($v) use ($is_live, $id_course) {
+            return [
+                'is_live' => $is_live,
+                'course_id' => $id_course,
+                'video' => $v
+            ];
+        }, $data->videos);
+
+        $result2 = $this->course->add_videos($videos);
+        if (@$result2->code != 201) {
+			return $this->respond(error_msg(400, "course", '01', $result2->message), 400);
 		}
 
-        return $this->respond(error_msg(201, "course", null, $result->message), 201);
+        return $this->respond(error_msg(201, "course", null, $result2->message), 201);
     }
 
 }

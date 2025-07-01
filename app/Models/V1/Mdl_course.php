@@ -32,7 +32,26 @@ class Mdl_course extends Model
     
             return (object) [
                 'code'    => 201,
+                'id'      => $this->db->insertID(),
                 'message' => 'Course added successfully.'
+            ];
+        } catch (\Exception $e) {
+            return (object) [
+                'code'    => 500,
+                'message' => 'Failed to add course.'
+            ];
+        }
+    }
+
+    public function add_videos($videos)
+    {
+        try {
+            $course = $this->db->table("videos");
+            $course->insertBatch($videos);
+    
+            return (object) [
+                'code'    => 201,
+                'message' => 'Videos course added successfully.'
             ];
         } catch (\Exception $e) {
             return (object) [
